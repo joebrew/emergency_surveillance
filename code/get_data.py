@@ -27,8 +27,8 @@ try:
     start_date = sys.argv[1]
     end_date = sys.argv[2]
 except:
-    start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
-    end_date = start_date
+	start_date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+	end_date = start_date
 
 # Give essence url format
 start_date = datetime.strptime(start_date, '%Y-%m-%d').strftime('%d%b%Y').lower()
@@ -132,6 +132,8 @@ for i in range(len(dates)):
 	# Give a status
 	print 'Done with ' + this_day
 
+	# Sleep
+	time.sleep(30)
 
 
 
