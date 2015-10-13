@@ -46,12 +46,6 @@ public = '/home/joebrew/Documents/emergency_surveillance'
 private = public + '/data'
 os.chdir(private)
 
-# Run the r script to get the dates and URLs for today's data download
-# os.chdir(public)
-# os.system('Rscript code/00_get_links.R')
-#robjects.r['source']("code/00_get_links.R")
-
-
 #####
 # LOG INTO ESSENCE SYSTEM
 #####
@@ -110,30 +104,43 @@ dates = pd.date_range(start = datetime.strptime(start_date, '%d%b%Y'), end = dat
 os.chdir(private)
 for i in range(len(dates)):
 
-	# Define (in essence url format) the day in question
-	this_day = dates[i].strftime('%d%b%Y').lower()
+    # Get the start time
+    start_time = datetime.now()
 
-	# Give a status
-	print 'Working on ' + this_day
+    # Define (in essence url format) the day in question
+    this_day = dates[i].strftime('%d%b%Y').lower()
 
-	# Make a filename
-	file_name = this_day + '.txt'
+    # Give a status
+    print 'Working on ' + this_day
 
-	# Get link
-	todays_link = 'https://www.essencefl.com/florida_5_1_14/servlet/PlainDataDetailsServlet?ageCDCILI=all&startDate=' + this_day + '&medicalGroupingSystem=essencesyndromes&initPulseOx=all&sex=all&geographySystem=hospitalregion&predomRace=all&dom=all&patientClass=all&timeResolution=daily&doy=all&censusRaceBlackPercGroup=all&endDate=' + this_day + '&dow=all&clinicalImpression=all&detector=probrepswitch&ageTenYear=all&geography=all&patientLoc=all&age=all&dischargeDiagnosis=all&year=all&medicalSubGrouping=all&datasource=va_hosp&censusRaceAsianPercGroup=all&percentParam=noPercent&medicalGrouping=all&timeInterval=all&aqtTarget=datadetails&hospitalGrouping=all&agerange=all&censusRaceHawaiianPercGroup=all&ccddFreeText=all&predomHispanic=all&initTemp=all&diagnosisType=all&censusRaceAmerIndPercGroup=all&dispositionCategory=all&medianIncomeGroup=all&agedistribute=all&month=all&ccddCategory=all&censusRaceOtherPercGroup=all&hospFacilityType=all&censusRaceWhitePercGroup=all&week=all&quarter=all'
+    # Make a filename
+    file_name = this_day + '.txt'
 
-	# READ AND WRITE THE DATA
-	my_file = br.open(todays_link)
-	# Write a text file
-	f = open(file_name, 'w')
-	f.write(my_file.read())
-	f.close()
+    # Get link
+    todays_link = 'https://www.essencefl.com/florida_5_1_14/servlet/PlainDataDetailsServlet?ageCDCILI=all&startDate=' + this_day + '&medicalGroupingSystem=essencesyndromes&initPulseOx=all&sex=all&geographySystem=hospitalregion&predomRace=all&dom=all&patientClass=all&timeResolution=daily&doy=all&censusRaceBlackPercGroup=all&endDate=' + this_day + '&dow=all&clinicalImpression=all&detector=probrepswitch&ageTenYear=all&geography=all&patientLoc=all&age=all&dischargeDiagnosis=all&year=all&medicalSubGrouping=all&datasource=va_hosp&censusRaceAsianPercGroup=all&percentParam=noPercent&medicalGrouping=all&timeInterval=all&aqtTarget=datadetails&hospitalGrouping=all&agerange=all&censusRaceHawaiianPercGroup=all&ccddFreeText=all&predomHispanic=all&initTemp=all&diagnosisType=all&censusRaceAmerIndPercGroup=all&dispositionCategory=all&medianIncomeGroup=all&agedistribute=all&month=all&ccddCategory=all&censusRaceOtherPercGroup=all&hospFacilityType=all&censusRaceWhitePercGroup=all&week=all&quarter=all'
 
-	# Give a status
-	print 'Done with ' + this_day
+    # READ AND WRITE THE DATA
+    my_file = br.open(todays_link)
+    # Write a text file
+    f = open(file_name, 'w')
+    f.write(my_file.read())
+    f.close()
 
-	# Sleep
-	time.sleep(30)
+    # Give a status
+    print 'Done with ' + this_day
+
+    # Get the end time
+    end_time = datetime.now()
+
+    # Print how long it took
+    print 'That day took ' + str(round((end_time - start_time).total_seconds())) + ' seconds.'
+
+    #
+
+
+    # # Sleep
+    # print 'Now sleeping 30 seconds.'
+    # time.sleep(30)
 
 
 
