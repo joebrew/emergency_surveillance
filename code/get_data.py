@@ -85,6 +85,10 @@ pu = pd.read_csv('credentials/pu.csv', dtype = 'string')
 u = list(pu['u'])[0]
 p = list(pu['p'])[0]
 
+# Print for debugging
+print 'Username is : ' + u
+print "Password is : " + p
+
 # User credentials
 br.form['j_username'] = u
 br.form['j_password'] = p
@@ -99,6 +103,7 @@ br.submit()
 
 # # Make a daterange object
 dates = pd.date_range(start = datetime.strptime(start_date, '%d%b%Y'), end = datetime.strptime(end_date, '%d%b%Y')).tolist()
+print 'Dates are ' + str(dates)
 
 # Loop through each date, getting the data for that day
 os.chdir(private)
@@ -117,7 +122,9 @@ for i in range(len(dates)):
     file_name = this_day + '.txt'
 
     # Get link
-    todays_link = 'https://www.essencefl.com/florida_5_1_14/servlet/PlainDataDetailsServlet?ageCDCILI=all&startDate=' + this_day + '&medicalGroupingSystem=essencesyndromes&initPulseOx=all&sex=all&geographySystem=hospitalregion&predomRace=all&dom=all&patientClass=all&timeResolution=daily&doy=all&censusRaceBlackPercGroup=all&endDate=' + this_day + '&dow=all&clinicalImpression=all&detector=probrepswitch&ageTenYear=all&geography=all&patientLoc=all&age=all&dischargeDiagnosis=all&year=all&medicalSubGrouping=all&datasource=va_hosp&censusRaceAsianPercGroup=all&percentParam=noPercent&medicalGrouping=all&timeInterval=all&aqtTarget=datadetails&hospitalGrouping=all&agerange=all&censusRaceHawaiianPercGroup=all&ccddFreeText=all&predomHispanic=all&initTemp=all&diagnosisType=all&censusRaceAmerIndPercGroup=all&dispositionCategory=all&medianIncomeGroup=all&agedistribute=all&month=all&ccddCategory=all&censusRaceOtherPercGroup=all&hospFacilityType=all&censusRaceWhitePercGroup=all&week=all&quarter=all'
+    # todays_link = 'https://www.essencefl.com/florida_5_1_14/servlet/PlainDataDetailsServlet?ageCDCILI=all&startDate=' + this_day + '&medicalGroupingSystem=essencesyndromes&initPulseOx=all&sex=all&geographySystem=hospitalregion&predomRace=all&dom=all&patientClass=all&timeResolution=daily&doy=all&censusRaceBlackPercGroup=all&endDate=' + this_day + '&dow=all&clinicalImpression=all&detector=probrepswitch&ageTenYear=all&geography=all&patientLoc=all&age=all&dischargeDiagnosis=all&year=all&medicalSubGrouping=all&datasource=va_hosp&censusRaceAsianPercGroup=all&percentParam=noPercent&medicalGrouping=all&timeInterval=all&aqtTarget=datadetails&hospitalGrouping=all&agerange=all&censusRaceHawaiianPercGroup=all&ccddFreeText=all&predomHispanic=all&initTemp=all&diagnosisType=all&censusRaceAmerIndPercGroup=all&dispositionCategory=all&medianIncomeGroup=all&agedistribute=all&month=all&ccddCategory=all&censusRaceOtherPercGroup=all&hospFacilityType=all&censusRaceWhitePercGroup=all&week=all&quarter=all'
+
+    todays_link = 'https://www.essencefl.com/florida_5_1_19/servlet/PlainDataDetailsServlet?ccddFreeText=all&initTemp=all&initPulseOx=all&year=all&endDate=' + this_day +' + &medianIncomeGroup=all&ageCDCILI=all&censusRaceBlackPercGroup=all&medicalGrouping=all&ccddCategory=all&diagnosisType=all&geography=all&percentParam=noPercent&patientClass=all&predomHispanic=all&ageTenYear=all&geographySystem=hospital&agedistribute=all&month=all&datasource=va_hosp&dispositionCategory=all&censusRaceAsianPercGroup=all&detector=probrepswitch&censusRaceOtherPercGroup=all&startDate=' + this_day + '&predomRace=all&week=all&dom=all&censusRaceAmerIndPercGroup=all&dow=all&hospitalGrouping=all&censusRaceHawaiianPercGroup=all&doy=all&timeResolution=daily&patientLoc=all&timeInterval=all&clinicalImpression=all&agerange=all&dischargeDiagnosis=all&medicalGroupingSystem=essencesyndromes&sex=all&userId=855&censusRaceWhitePercGroup=all&medicalSubGrouping=all&hospFacilityType=all&aqtTarget=datadetails&age=all&quarter=all'
 
     # READ AND WRITE THE DATA
     my_file = br.open(todays_link)
