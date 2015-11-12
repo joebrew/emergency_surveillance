@@ -5,12 +5,40 @@ library(dplyr)
 library(ggplot2)
 library(ggthemes)
 
+# Jonathan ----
 jon_raw <- read_csv('data/jonathan_provided/jonathans_essence_data_request.csv')
 
 # Get total visits
 jon_agg <- jon_raw %>%
   group_by(date) %>%
   summarise(n = sum(TotalVisits))
+
+# Joe ---
+joe_raw <- read_csv('data/hospital_visits_by_day.csv')
+joe_agg <- joe_raw %>% group_by(date) %>% summarise(n = sum(n))
+
+# Plot
+ggplot() +
+  geom_point(data = joe_agg, aes(x = date, y = n), col = 'blue', alpha = 0.5) +
+  geom_point(data = jon_agg, aes(x = date, y = n), col = 'red', alpha = 0.5) +
+  theme_economist() +
+  xlab('Date') +
+  ylab('Visits') +
+  ggtitle('Jon (red) vs Joe (blue)')
+ggsave('~/Desktop/jon_vs_joe.png')
+
+# Get difference
+df <- left_join(jon_agg, joe_agg, by = 'date')
+names(df) <- c('date', 'jon', 'joe')
+df$dif <- df$joe - df$jon
+
+ggplot(df, aes(x = date, y = dif)) +
+  geom_line() +
+  ggtitle('Difference between Jon and Joe\'s aggregations (daily visits)') +
+  theme_economist() +
+  ylab('Joe\'s numbers minus Jon\'s') +
+  xlab('Date')
+ggsave('~/Desktop/jon_vs_joe_difference.png')
 
 # Group by year, month
 jon_agg$year <- as.numeric(format(jon_agg$date, '%Y'))
