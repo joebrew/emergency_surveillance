@@ -70,6 +70,12 @@ eg$n[which(is.na(eg$n))] <- 0
 eg$month <- as.numeric(format(eg$date, '%m'))
 eg$year <- as.numeric(format(eg$date, '%Y'))
 
+# Write a by day csv for Jonathan
+setwd(data_dir)
+setwd('jonathan_results/')
+write_csv(eg, 'hospital_visits_by_time.csv')
+
+
 # Group by year-month
 eg_grouped <-
   eg %>%
