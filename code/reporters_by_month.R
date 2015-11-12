@@ -64,17 +64,17 @@ eg <- expand.grid('date' = unique(sort(results$date)),
                   'HospitalName' = unique(sort(results$HospitalName)))
 # Join eg and results, so that we have NA's for the 0s
 eg <- left_join(eg, results)
-# Make NA's 0s
+# Make 
+setwd(data_dir)
+setwd('jonathan_results/')
+write_csv(eg, 'hospital_visits_by_day.csv')
+NA's 0s
 eg$n[which(is.na(eg$n))] <- 0
 # Get a month and year
 eg$month <- as.numeric(format(eg$date, '%m'))
 eg$year <- as.numeric(format(eg$date, '%Y'))
 
 # Write a by day csv for Jonathan
-setwd(data_dir)
-setwd('jonathan_results/')
-write_csv(eg, 'hospital_visits_by_time.csv')
-
 
 # Group by year-month
 eg_grouped <-
