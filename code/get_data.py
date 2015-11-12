@@ -103,7 +103,7 @@ br.submit()
 
 # # Make a daterange object
 dates = pd.date_range(start = datetime.strptime(start_date, '%d%b%Y'), end = datetime.strptime(end_date, '%d%b%Y')).tolist()
-print 'Dates are ' + str(dates)
+# print 'Dates are ' + str(dates)
 
 # Loop through each date, getting the data for that day
 os.chdir(private)
