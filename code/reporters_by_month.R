@@ -1,6 +1,7 @@
 #####
 # PACKAGES
 #####
+library(tidyr)
 library(dplyr)
 library(readr)
 
@@ -62,15 +63,33 @@ for (i in 1:length(data_files)){
     temp$exclude[is.na(temp$exclude)] <- FALSE
     temp <- temp[!temp$exclude,]
     
-    # Group by date, age and county of residence
+    # Create columns for ILI, Injury and GI
+    temp$ILI <- grepl('ILI', temp$Category_flat)
+    temp$Injury <- grepl('Injury', temp$Category_flat)
+    temp$GI <- grepl('GI', temp$Category_flat)
+    
+    # Subset further
+    temp <- 
+      temp %>%
+      dplyr::select(date, Age, Region, ILI, GI, Injury)
+    
+    # Get counts for each of the syndromes
+    syndromes <- c('ILI', 'GI', 'INJURY')
     temp <- temp %>%
-      group_by(date, Age, Region) %>%
+      gather(syndrome, value, ILI:Injury)
+    
+    # Get rid of non-syndromes
+    temp <- temp[which(temp$value),]
+    
+    # Group by date, age, syndrome and county of residence
+    temp <- temp %>%
+      group_by(date, Age, Region, syndrome) %>%
       summarise(n = n()) %>%
       rename(age = Age,
              county_of_residence = Region)
     
     # Order by county of residence, date
-    temp <- arrange(temp, county_of_residence, date, age)
+    temp <- arrange(temp, syndrome, county_of_residence, date, age)
     
     # Put temp into the results list
     results_list[[i]] <- temp
@@ -85,7 +104,7 @@ for (i in 1:length(data_files)){
 # BIND TOGETHER THE RESULTS
 #####
 results <- do.call('rbind', results_list)
-save.image('~/Desktop/temp.RData')
+save.image('~/Desktop/temp_by_syndrome.RData')
 
 #####
 # CLEAN UP
