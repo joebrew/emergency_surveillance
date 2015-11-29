@@ -37,16 +37,31 @@ setwd(data_dir)
 data_files <- dir()
 results_list <- list()
 
+# What indexes will we loop through
+looper <- 1:length(data_files)
+
+# Option to just count multiples
+multiples <- TRUE
+
+# Make a dataframe to store multiples results
+if(multiples){
+  looper <- sample(looper, 100)
+  multiples_df <- data.frame(ind = looper,
+                             n = NA,
+                             N = NA,
+                             p = NA)
+}
+
 # Loop
-for (i in 1:length(data_files)){
+for (i in 1:length(looper)){
 
   # Update
-  cat(paste0('Working on ', i, ' of ', length(data_files)))
+  cat(paste0('Working on ', i, ' of ', length(looper)))
 
   try({
   
     # Read in data for that date
-    temp <- read.table(data_files[i], 
+    temp <- read.table(data_files[looper[i]], 
                        sep = ',', 
                        header = TRUE)
     # Clean up date
@@ -73,30 +88,48 @@ for (i in 1:length(data_files)){
       temp %>%
       dplyr::select(date, Age, Region, ILI, GI, Injury)
     
-    # Get counts for each of the syndromes
-    syndromes <- c('ILI', 'GI', 'INJURY')
-    temp <- temp %>%
-      gather(syndrome, value, ILI:Injury)
-    
-    # Get rid of non-syndromes
-    temp <- temp[which(temp$value),]
-    
-    # Group by date, age, syndrome and county of residence
-    temp <- temp %>%
-      group_by(date, Age, Region, syndrome) %>%
-      summarise(n = n()) %>%
-      rename(age = Age,
-             county_of_residence = Region)
-    
-    # Order by county of residence, date
-    temp <- arrange(temp, syndrome, county_of_residence, date, age)
-    
-    # Put temp into the results list
-    results_list[[i]] <- temp
-    
-    # Update
-    cat(paste0('---done!\n'))
+    # If multiples, just return the proportion of multiples
+    if(multiples){
+      temp$multiple <- 
+        (temp$ILI & temp$GI) |
+        (temp$ILI & temp$Injury) |
+        (temp$Injury & temp$GI)
+      N <- nrow(temp)
+      n <- length(which(temp$multiple))
+      p <- n / N
       
+      multiples_df$N[i] <- N
+      multiples_df$n[i] <- n
+      multiples_df$p[i] <- p
+    } else {
+      
+      
+      # Get counts for each of the syndromes
+      syndromes <- c('ILI', 'GI', 'INJURY')
+      temp <- temp %>%
+        gather(syndrome, value, ILI:Injury)
+      
+      # Get rid of non-syndromes
+      temp <- temp[which(temp$value),]
+      
+      # Group by date, age, syndrome and county of residence
+      temp <- temp %>%
+        group_by(date, Age, Region, syndrome) %>%
+        summarise(n = n()) %>%
+        rename(age = Age,
+               county_of_residence = Region)
+      
+      # Order by county of residence, date
+      temp <- arrange(temp, syndrome, county_of_residence, date, age)
+      
+      # Put temp into the results list
+      results_list[[i]] <- temp
+      
+      # Update
+      cat(paste0('---done!\n'))
+      
+    }
+          
   })
 }
 
