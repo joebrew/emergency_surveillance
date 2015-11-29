@@ -112,20 +112,29 @@ save.image('~/Desktop/temp_by_syndrome.RData')
 # Get an expanded grid version
 eg <- expand.grid('date' = unique(sort(results$date)),
                   'age' = unique(sort(results$age)),
-                  'county_of_residence' = unique(sort(results$county_of_residence)))
+                  'county_of_residence' = unique(sort(results$county_of_residence)),
+                  'syndrome' = unique(sort(results$syndrome)))
 # Join eg and results, so that we have NA's for the 0s
 eg <- left_join(eg, results)
 # Make 
 setwd(data_dir)
-setwd('jonathan_results/')
+setwd('jonathan_results/by_syndrome')
 
 eg$n[which(is.na(eg$n))] <- 0
 # Get a month and year
 # eg$month <- as.numeric(format(eg$date, '%m'))
-# eg$year <- as.numeric(format(eg$date, '%Y'))
+eg$year <- as.numeric(format(eg$date, '%Y'))
 
-# Write a by day csv for Jonathan
-write_csv(eg, 'hospital_visits_by_day_by_age_by_residence.csv')
+# Arrange
+eg <- eg %>% arrange(date)
+
+# Write csvs for Jonathan
+for (i in 2005:2015){
+  cat(paste0('Working on', i, '.\n'))
+  sub_data <- eg %>% filter(year == i)
+  write_csv(sub_data, paste0('hospital_visits_by_day_by_age_by_residence_by_syndrome_', i, '.csv'))
+}
+# write_csv(eg, 'hospital_visits_by_day_by_age_by_residence_by_syndrome.csv')
 
 # # Group by year-month
 # # Get a month and year
